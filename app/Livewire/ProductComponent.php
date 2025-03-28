@@ -16,7 +16,12 @@ class ProductComponent extends Component
      */
     public function mount()
     {
-        $this->products = Product::all();
+        // Simulando dados sem acessar o banco
+        $this->products = collect([
+            ['id' => 1, 'name' => 'Produto 1', 'price' => 100],
+            ['id' => 2, 'name' => 'Produto 2', 'price' => 200],
+        ]);
+
     }
 
     /**
@@ -26,7 +31,7 @@ class ProductComponent extends Component
      */
     public function render()
     {
-        return view('livewire.product_component', [
+        return view('livewire.product-component', [
             'products' => $this->products,
         ]);
     }
