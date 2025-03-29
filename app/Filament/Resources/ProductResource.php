@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enum\StatusEnum;
 use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Models\Product;
@@ -23,16 +24,6 @@ class ProductResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     /**
-     * Método adicionado para evitar query no banco de dados
-     *
-     * @return Builder
-     */
-    public static function getEloquentQuery(): Builder
-    {
-        return static::getModel()::query()->whereNull('id'); // Evita carregar dados do banco
-    }
-
-    /**
      * Gerando o formulário de cadastro de produtos
      *
      * @param Form $form
@@ -40,17 +31,15 @@ class ProductResource extends Resource
      */
     public static function form(Form $form): Form
     {
+        $statusEnum = StatusEnum::options();
         return $form
             ->schema([
                 TextInput::make('name')->label('Nome')->required(),
                 TextInput::make('description')->label('Descrição')->nullable(),
                 TextInput::make('price')->label('Preço')->numeric()->required(),
-                Select::make('category')
-                    ->options([
-                        '1' => 'Eletrônicos',
-                        '2' => 'Móveis',
-                    ])
-                    ->label('Categoria'),
+                Select::make('status')
+                    ->options($statusEnum)->label('Status')
+                    ->default(StatusEnum::ACTIVE)
             ]);
     }
 
@@ -64,18 +53,14 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('id')->label('ID'),
                 TextColumn::make('name')->label('Nome'),
                 TextColumn::make('description')->label('Descrição'),
                 TextColumn::make('price')->label('Preço'),
-                TextColumn::make('category')->label('Categoria'),
+                TextColumn::make('status')->label('Status'),
             ])
-            ->paginated(false)
-            ->defaultSort('name')
-            //usando collect para mockar os dados
-            ->query(fn() => collect([
-                ['name' => 'Produto 1', 'description' => 'Apenas uma descrição1', 'price' => 'R$ 100', 'category' => 'Eletrônicos'],
-                ['name' => 'Produto 2', 'description' => 'Apenas uma descrição2', 'price' => 'R$ 200', 'category' => 'Móveis'],
-            ]));
+            ->paginated(true)
+            ->defaultSort('ID');
     }
 
     /**

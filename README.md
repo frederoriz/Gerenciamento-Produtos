@@ -8,9 +8,11 @@ rodar:
 
 #Instalar livewire pelo composer
 
+#Instalar o tailwind
+npm install -D tailwindcss postcss autoprefixer
 
 #Gerar chave para o .env
 php artisan key:generate
 
-#Para configurar um db mesmo mockado
+#Para instalar o banco de dados
 touch database/database.sqlite

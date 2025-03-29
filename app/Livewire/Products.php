@@ -2,12 +2,13 @@
 
 namespace App\Livewire;
 
+use App\Enum\StatusEnum;
 use App\Models\Product;
 use Livewire\Component;
 
-class ProductComponent extends Component
+class Products extends Component
 {
-     public $products;
+    public $products;
 
     /**
      * Busca os dados dos Produtos
@@ -16,12 +17,7 @@ class ProductComponent extends Component
      */
     public function mount()
     {
-        // Simulando dados sem acessar o banco
-        $this->products = collect([
-            ['id' => 1, 'name' => 'Produto 1', 'price' => 100],
-            ['id' => 2, 'name' => 'Produto 2', 'price' => 200],
-        ]);
-
+        $this->products = Product::all();
     }
 
     /**
@@ -31,8 +27,9 @@ class ProductComponent extends Component
      */
     public function render()
     {
-        return view('livewire.product-component', [
+        return view('livewire.products', [
             'products' => $this->products,
+            'statusOptions' => StatusEnum::options(),
         ]);
     }
 }
